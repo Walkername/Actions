@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="act.controller.Controller"
+            prefHeight="400.0" prefWidth="600.0">
+    <HBox>
+        <Button onAction="#addCard" text="Add Card"/>
+    </HBox>
+    <ScrollPane>
+        <FlowPane fx:id="cardPanel" style="-fx-padding: 5 5 5 5;" orientation="VERTICAL" vgap="5">
+
+        </FlowPane>
+    </ScrollPane>
+</VBox>

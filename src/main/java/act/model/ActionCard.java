@@ -6,6 +6,12 @@ public class ActionCard {
     private int priority;
     private String content;
 
+    public ActionCard(String name, int priority, String content) {
+        this.name = name;
+        this.priority = priority;
+        this.content = content;
+    }
+
     public String getName() {
         return this.name;
     }
