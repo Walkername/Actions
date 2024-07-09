@@ -3,15 +3,26 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <VBox xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="act.controller.Controller"
-            prefHeight="400.0" prefWidth="600.0" style="-fx-padding: 5 5 5 5;" spacing="10">
-    <HBox spacing="5">
-        <Button onAction="#addCard" text="Add Card"/>
-        <Button onAction="#deleteAllCards" text="Clear List" />
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="act.controller.Controller"
+      fx:id="mainPanel"
+      prefHeight="400.0" prefWidth="600.0" style="-fx-padding: 5 5 5 5;" spacing="10">
+    <HBox>
+        <HBox spacing="5" alignment="BASELINE_LEFT" HBox.hgrow="ALWAYS">
+            <Button onAction="#addCard" text="Add Card" />
+            <Button alignment="BASELINE_LEFT" onAction="#deleteAllCards" text="Clear List" />
+        </HBox>
+        <HBox HBox.hgrow="ALWAYS" alignment="CENTER">
+            <Text style="-fx-font: 14 Serif;" text="ToDo List Application" />
+        </HBox>
+        <HBox spacing="5" alignment="BASELINE_RIGHT" HBox.hgrow="ALWAYS">
+            <Button text="Calendar" onAction="#openCalendar"/>
+        </HBox>
     </HBox>
-    <ScrollPane>
+
+    <ScrollPane VBox.vgrow="ALWAYS">
         <FlowPane fx:id="cardPanel" style="-fx-padding: 5 5 5 5;" orientation="VERTICAL" vgap="5">
 
         </FlowPane>

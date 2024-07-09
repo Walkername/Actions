@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
@@ -14,12 +16,14 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main.fxml")));
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Actions");
             stage.setWidth(800);
             stage.setHeight(500);
+            stage.setMinWidth(500);
+            stage.setMinHeight(200);
             stage.show();
         } catch (Exception ex) {
             ex.printStackTrace();

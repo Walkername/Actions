@@ -1,4 +1,4 @@
-package act.model;
+package act.card;
 
 public class ActionCard {
 

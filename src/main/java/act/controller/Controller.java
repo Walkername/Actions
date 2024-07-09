@@ -1,23 +1,22 @@
 package act.controller;
 
-import act.model.ActionCard;
+import act.card.ActionCard;
+import act.model.Model;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Controller {
 
-    List<ActionCard> cardsList = new ArrayList<>();
+    private final Model model = new Model();
+
+    @FXML
+    private VBox mainPanel;
 
     @FXML
     private FlowPane cardPanel;
@@ -29,7 +28,7 @@ public class Controller {
                 0,
                 ""
         );
-        cardsList.add(newCard);
+        model.addCard(newCard);
 
         HBox cardElement = buildCardElement(newCard);
         cardPanel.getChildren().add(cardElement);
@@ -41,10 +40,40 @@ public class Controller {
         alert.setTitle("List clear");
         alert.setHeaderText("You're about to clear the ToDo List!");
         alert.setContentText("Are you sure you want to delete all your cards?");
-        if (alert.showAndWait().get() == ButtonType.OK) {
+        if (alert.showAndWait().orElse(null) == ButtonType.OK) {
             cardPanel.getChildren().clear();
-            cardsList.clear();
+            model.deleteAllCards();
         }
+    }
+
+    @FXML
+    private void openCalendar() {
+        mainPanel.getChildren().clear();
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+
+        int k = 1;
+        for (int i = 1; i <= 5; i++) {
+            for (int j = 1; j <= 7; j++) {
+                if (k == 32) {
+                    break;
+                }
+                VBox calendarCell = new VBox();
+                calendarCell.setAlignment(Pos.CENTER);
+                calendarCell.setMinSize(50.0, 50.0);
+                calendarCell.setMaxSize(50.0, 50.0);
+                calendarCell.setStyle("-fx-border-color: black;");
+                calendarCell.getChildren().add(new Text(String.valueOf(k)));
+
+                grid.add(calendarCell, j, i);
+                k++;
+            }
+        }
+
+        VBox.setVgrow(grid, Priority.ALWAYS);
+        HBox.setHgrow(grid, Priority.ALWAYS);
+        grid.setStyle("-fx-border-color: black;");
+        mainPanel.getChildren().add(grid);
     }
 
     private HBox buildCardElement(ActionCard card) {
@@ -69,7 +98,7 @@ public class Controller {
 
         todoCheckBox.setOnAction(event -> {
             cardPanel.getChildren().remove(cardElement);
-            cardsList.remove(card);
+            model.removeCard(card);
         });
 
         return cardElement;
