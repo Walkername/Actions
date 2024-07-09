@@ -4,10 +4,7 @@ import act.model.ActionCard;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -36,8 +33,18 @@ public class Controller {
 
         HBox cardElement = buildCardElement(newCard);
         cardPanel.getChildren().add(cardElement);
+    }
 
-
+    @FXML
+    private void deleteAllCards() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("List clear");
+        alert.setHeaderText("You're about to clear the ToDo List!");
+        alert.setContentText("Are you sure you want to delete all your cards?");
+        if (alert.showAndWait().get() == ButtonType.OK) {
+            cardPanel.getChildren().clear();
+            cardsList.clear();
+        }
     }
 
     private HBox buildCardElement(ActionCard card) {
