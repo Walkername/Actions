@@ -27,27 +27,64 @@ public class Controller {
 
     @FXML
     private void addCard() {
+        ActionCard newCard = new ActionCard(
+                "New Card",
+                0,
+                ""
+        );
+        cardsList.add(newCard);
+
+        HBox cardElement = buildCardElement(newCard);
+        cardPanel.getChildren().add(cardElement);
+
+
+    }
+
+    private HBox buildCardElement(ActionCard card) {
+        VBox cardImage = new VBox();
+
+        cardImage.setMinSize(100.0, 50.0);
+        cardImage.setMaxSize(100.0, 50.0);
+        cardImage.setStyle("-fx-border-color: black;");
+        cardImage.setAlignment(Pos.CENTER);
+
+        Text cardImageText = new Text(card.getPriority() + ": " + card.getName());
+        cardImage.getChildren().add(cardImageText);
+
+        CheckBox todoCheckBox = new CheckBox();
+
+        HBox cardElement = new HBox();
+        cardElement.setAlignment(Pos.CENTER);
+        cardElement.setSpacing(5);
+        cardElement.getChildren().addAll(todoCheckBox, cardImage);
+
+        cardImage.setOnMouseClicked(event -> customizeCard(card, cardImageText));
+
+        todoCheckBox.setOnAction(event -> {
+            cardPanel.getChildren().remove(cardElement);
+            cardsList.remove(card);
+        });
+
+        return cardElement;
+    }
+
+    private void customizeCard(ActionCard card, Text cardImageText) {
         Stage cardSettingsStage = new Stage();
 
         Text nameText = new Text("Card name");
-        TextField nameField = new TextField();
+        TextField nameField = new TextField(card.getName());
 
         Text priorityText = new Text("Card priority");
-        TextField priorityField = new TextField();
+        TextField priorityField = new TextField(String.valueOf(card.getPriority()));
 
         Text contentText = new Text("Card content");
-        TextArea contentArea = new TextArea();
+        TextArea contentArea = new TextArea(card.getContent());
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> {
-            ActionCard newCard = new ActionCard(
-                    nameField.getText(),
-                    Integer.parseInt(priorityField.getText()),
-                    contentArea.getText()
-            );
-            cardsList.add(newCard);
-
-            HBox cardElement = buildCardElement(nameField.getText(), newCard);
-            cardPanel.getChildren().add(cardElement);
+            card.setName(nameField.getText());
+            card.setPriority(Integer.parseInt(priorityField.getText()));
+            card.setContent(contentArea.getText());
+            cardImageText.setText(card.getPriority() + ": " + card.getName());
             cardSettingsStage.close();
         });
 
@@ -67,30 +104,5 @@ public class Controller {
         cardSettingsStage.setScene(scene);
         cardSettingsStage.setTitle("Card Creating Window");
         cardSettingsStage.show();
-    }
-
-    private HBox buildCardElement(String cardName, ActionCard card) {
-        VBox cardImage = new VBox();
-        cardImage.setMinSize(50.0, 50.0);
-        cardImage.setMaxSize(50.0, 50.0);
-        cardImage.setStyle("-fx-border-color: black;");
-        cardImage.setAlignment(Pos.CENTER);
-
-        Text cardImageText = new Text(cardName);
-        cardImage.getChildren().add(cardImageText);
-
-        CheckBox todoCheckBox = new CheckBox();
-
-        HBox cardElement = new HBox();
-        cardElement.setAlignment(Pos.CENTER);
-        cardElement.setSpacing(5);
-        cardElement.getChildren().addAll(todoCheckBox, cardImage);
-
-        todoCheckBox.setOnAction(event -> {
-            cardPanel.getChildren().remove(cardElement);
-            cardsList.remove(card);
-        });
-
-        return cardElement;
     }
 }
