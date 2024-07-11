@@ -19,10 +19,10 @@ public class Controller {
     private VBox mainPanel;
 
     @FXML
-    private FlowPane cardPanel;
+    private HBox cardPanel;
 
     @FXML
-    private void addCard() {
+    private void addCard(VBox block) {
         ActionCard newCard = new ActionCard(
                 "New Card",
                 0,
@@ -30,8 +30,59 @@ public class Controller {
         );
         model.addCard(newCard);
 
-        HBox cardElement = buildCardElement(newCard);
-        cardPanel.getChildren().add(cardElement);
+        HBox cardElement = buildCardElement(block, newCard);
+        block.getChildren().add(block.getChildren().size() - 1, cardElement);
+    }
+
+    @FXML
+    private void addBlock() {
+        VBox block = new VBox();
+        block.setSpacing(5);
+
+        StackPane blockTitleBox = new StackPane();
+        blockTitleBox.setStyle("-fx-border-color: black;");
+        blockTitleBox.setMinSize(100.0, 50.0);
+        blockTitleBox.setMaxSize(200.0, 100.0);
+        blockTitleBox.setAlignment(Pos.CENTER);
+
+        Label blockLabel = new Label("New Block");
+        TextField blockLabelField = new TextField();
+        blockLabelField.setVisible(false);
+        blockLabelField.setAlignment(Pos.CENTER);
+
+        blockLabel.setOnMouseClicked(event -> {
+            blockLabelField.setText(blockLabel.getText());
+            blockLabel.setVisible(false);
+            blockLabelField.setVisible(true);
+            blockLabelField.requestFocus();
+            blockLabelField.selectAll();
+        });
+
+        blockLabelField.setOnAction(event -> {
+            blockLabel.setText(blockLabelField.getText());
+            blockLabelField.setVisible(false);
+            blockLabel.setVisible(true);
+        });
+
+        blockLabelField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue) {
+                blockLabel.setText(blockLabelField.getText());
+                blockLabelField.setVisible(false);
+                blockLabel.setVisible(true);
+            }
+        });
+
+        blockTitleBox.getChildren().addAll(blockLabelField, blockLabel);
+
+        block.getChildren().add(blockTitleBox);
+
+        Button addCardButton = new Button("Add Card");
+        addCardButton.setAlignment(Pos.CENTER);
+        addCardButton.setOnAction(event -> addCard(block));
+
+        block.getChildren().add(addCardButton);
+
+        cardPanel.getChildren().add(cardPanel.getChildren().size() - 1, block);
     }
 
     @FXML
@@ -48,35 +99,10 @@ public class Controller {
 
     @FXML
     private void openCalendar() {
-        mainPanel.getChildren().clear();
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
 
-        int k = 1;
-        for (int i = 1; i <= 5; i++) {
-            for (int j = 1; j <= 7; j++) {
-                if (k == 32) {
-                    break;
-                }
-                VBox calendarCell = new VBox();
-                calendarCell.setAlignment(Pos.CENTER);
-                calendarCell.setMinSize(50.0, 50.0);
-                calendarCell.setMaxSize(50.0, 50.0);
-                calendarCell.setStyle("-fx-border-color: black;");
-                calendarCell.getChildren().add(new Text(String.valueOf(k)));
-
-                grid.add(calendarCell, j, i);
-                k++;
-            }
-        }
-
-        VBox.setVgrow(grid, Priority.ALWAYS);
-        HBox.setHgrow(grid, Priority.ALWAYS);
-        grid.setStyle("-fx-border-color: black;");
-        mainPanel.getChildren().add(grid);
     }
 
-    private HBox buildCardElement(ActionCard card) {
+    private HBox buildCardElement(VBox block, ActionCard card) {
         VBox cardImage = new VBox();
 
         cardImage.setMinSize(100.0, 50.0);
@@ -97,7 +123,7 @@ public class Controller {
         cardImage.setOnMouseClicked(event -> customizeCard(card, cardImageText));
 
         todoCheckBox.setOnAction(event -> {
-            cardPanel.getChildren().remove(cardElement);
+            block.getChildren().remove(cardElement);
             model.removeCard(card);
         });
 

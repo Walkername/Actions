@@ -11,7 +11,7 @@
       prefHeight="400.0" prefWidth="600.0" style="-fx-padding: 5 5 5 5;" spacing="10">
     <HBox>
         <HBox spacing="5" alignment="BASELINE_LEFT" HBox.hgrow="ALWAYS">
-            <Button onAction="#addCard" text="Add Card" />
+
             <Button alignment="BASELINE_LEFT" onAction="#deleteAllCards" text="Clear List" />
         </HBox>
         <HBox HBox.hgrow="ALWAYS" alignment="CENTER">
@@ -22,9 +22,11 @@
         </HBox>
     </HBox>
 
-    <ScrollPane VBox.vgrow="ALWAYS">
-        <FlowPane fx:id="cardPanel" style="-fx-padding: 5 5 5 5;" orientation="VERTICAL" vgap="5">
-
-        </FlowPane>
+    <ScrollPane VBox.vgrow="ALWAYS" >
+        <HBox fx:id="cardPanel" style="-fx-padding: 5 5 5 5;" spacing="5" >
+            <HBox>
+                <Button onAction="#addBlock" text="+"/>
+            </HBox>
+        </HBox>
     </ScrollPane>
 </VBox>
