@@ -11,6 +11,9 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.List;
+import java.util.Map;
+
 
 public class Controller {
 
@@ -22,6 +25,24 @@ public class Controller {
     private HBox cardPanel;
 
     @FXML
+    public void initialize() {
+        model.loadData();
+
+        Map<CardBlock, List<ActionCard>> cardsMap = model.getCardsMap();
+
+        for (CardBlock cardBlock : cardsMap.keySet()) {
+            VBox block = buildBlockElement(cardBlock);
+            for (ActionCard card : cardsMap.get(cardBlock)) {
+                HBox cardElement = buildCardElement(block, cardBlock, card);
+                block.getChildren().add(block.getChildren().size() - 1, cardElement);
+            }
+        }
+    }
+
+    public void saveData() {
+        model.saveData();
+    }
+
     private void addCard(CardBlock cardBlock, VBox block) {
         ActionCard newCard = new ActionCard(
                 "New Card",
@@ -34,8 +55,7 @@ public class Controller {
         block.getChildren().add(block.getChildren().size() - 1, cardElement);
     }
 
-    @FXML
-    private void addBlock() {
+    private VBox buildBlockElement(CardBlock newBlock) {
         VBox block = new VBox();
         block.setSpacing(5);
 
@@ -47,8 +67,6 @@ public class Controller {
 
         Label blockLabel = new Label("New Block " + blocksNumber);
         blocksNumber++;
-
-        CardBlock newBlock = new CardBlock(blockLabel.getText());
 
         TextField blockLabelField = new TextField();
         blockLabelField.setVisible(false);
@@ -88,6 +106,14 @@ public class Controller {
         block.getChildren().add(addCardButton);
 
         cardPanel.getChildren().add(cardPanel.getChildren().size() - 1, block);
+
+        return block;
+    }
+
+    @FXML
+    private void addBlock() {
+        CardBlock newBlock = new CardBlock("New Block");
+        buildBlockElement(newBlock);
     }
 
     @FXML

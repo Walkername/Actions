@@ -1,9 +1,12 @@
 package act;
 
+import act.controller.Controller;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -16,7 +19,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("main.fxml")));
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Actions");
@@ -25,8 +29,26 @@ public class Main extends Application {
             stage.setMinWidth(500);
             stage.setMinHeight(200);
             stage.show();
+
+            stage.setOnCloseRequest(event -> {
+                event.consume();
+                logout(stage, loader);
+            });
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void logout(Stage stage, FXMLLoader loader) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Logout");
+        alert.setHeaderText("You're about to logout!");
+        alert.setContentText("Are you sure you want to exit?");
+
+        if (alert.showAndWait().orElse(null) == ButtonType.OK) {
+            Controller controller = loader.getController();
+            controller.saveData();
+            stage.close();
         }
     }
 }

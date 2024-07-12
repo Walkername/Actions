@@ -1,6 +1,8 @@
 package act.card;
 
-public class CardBlock {
+import java.io.Serializable;
+
+public class CardBlock implements Serializable {
 
     private String name;
 

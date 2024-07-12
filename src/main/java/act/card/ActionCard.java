@@ -1,6 +1,8 @@
 package act.card;
 
-public class ActionCard {
+import java.io.Serializable;
+
+public class ActionCard implements Serializable {
 
     private String name;
     private int priority;
