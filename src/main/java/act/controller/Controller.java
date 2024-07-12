@@ -1,6 +1,7 @@
 package act.controller;
 
 import act.card.ActionCard;
+import act.card.CardBlock;
 import act.model.Model;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -15,22 +16,21 @@ public class Controller {
 
     private final Model model = new Model();
 
-    @FXML
-    private VBox mainPanel;
+    private int blocksNumber = 0;
 
     @FXML
     private HBox cardPanel;
 
     @FXML
-    private void addCard(VBox block) {
+    private void addCard(CardBlock cardBlock, VBox block) {
         ActionCard newCard = new ActionCard(
                 "New Card",
                 0,
                 ""
         );
-        model.addCard(newCard);
+        model.addCard(cardBlock, newCard);
 
-        HBox cardElement = buildCardElement(block, newCard);
+        HBox cardElement = buildCardElement(block, cardBlock, newCard);
         block.getChildren().add(block.getChildren().size() - 1, cardElement);
     }
 
@@ -45,7 +45,11 @@ public class Controller {
         blockTitleBox.setMaxSize(200.0, 100.0);
         blockTitleBox.setAlignment(Pos.CENTER);
 
-        Label blockLabel = new Label("New Block");
+        Label blockLabel = new Label("New Block " + blocksNumber);
+        blocksNumber++;
+
+        CardBlock newBlock = new CardBlock(blockLabel.getText());
+
         TextField blockLabelField = new TextField();
         blockLabelField.setVisible(false);
         blockLabelField.setAlignment(Pos.CENTER);
@@ -67,6 +71,7 @@ public class Controller {
         blockLabelField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue) {
                 blockLabel.setText(blockLabelField.getText());
+                newBlock.setName(blockLabelField.getText());
                 blockLabelField.setVisible(false);
                 blockLabel.setVisible(true);
             }
@@ -78,7 +83,7 @@ public class Controller {
 
         Button addCardButton = new Button("Add Card");
         addCardButton.setAlignment(Pos.CENTER);
-        addCardButton.setOnAction(event -> addCard(block));
+        addCardButton.setOnAction(event -> addCard(newBlock, block));
 
         block.getChildren().add(addCardButton);
 
@@ -102,7 +107,7 @@ public class Controller {
 
     }
 
-    private HBox buildCardElement(VBox block, ActionCard card) {
+    private HBox buildCardElement(VBox block, CardBlock cardBlock, ActionCard card) {
         VBox cardImage = new VBox();
 
         cardImage.setMinSize(100.0, 50.0);
@@ -123,8 +128,8 @@ public class Controller {
         cardImage.setOnMouseClicked(event -> customizeCard(card, cardImageText));
 
         todoCheckBox.setOnAction(event -> {
+            model.removeCard(cardBlock, card);
             block.getChildren().remove(cardElement);
-            model.removeCard(card);
         });
 
         return cardElement;
