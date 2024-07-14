@@ -28,13 +28,15 @@ public class Controller {
     public void initialize() {
         model.loadData();
 
-        Map<CardBlock, List<ActionCard>> cardsMap = model.getCardsMap();
+        if (!model.getCardsMap().isEmpty()) {
+            Map<CardBlock, List<ActionCard>> cardsMap = model.getCardsMap();
 
-        for (CardBlock cardBlock : cardsMap.keySet()) {
-            VBox block = buildBlockElement(cardBlock);
-            for (ActionCard card : cardsMap.get(cardBlock)) {
-                HBox cardElement = buildCardElement(block, cardBlock, card);
-                block.getChildren().add(block.getChildren().size() - 1, cardElement);
+            for (CardBlock cardBlock : cardsMap.keySet()) {
+                VBox block = buildBlockElement(cardBlock);
+                for (ActionCard card : cardsMap.get(cardBlock)) {
+                    HBox cardElement = buildCardElement(block, cardBlock, card);
+                    block.getChildren().add(block.getChildren().size() - 1, cardElement);
+                }
             }
         }
     }
@@ -65,8 +67,8 @@ public class Controller {
         blockTitleBox.setMaxSize(200.0, 100.0);
         blockTitleBox.setAlignment(Pos.CENTER);
 
-        Label blockLabel = new Label("New Block " + blocksNumber);
-        blocksNumber++;
+        Label blockLabel = new Label(newBlock.getName());
+
 
         TextField blockLabelField = new TextField();
         blockLabelField.setVisible(false);
@@ -112,7 +114,8 @@ public class Controller {
 
     @FXML
     private void addBlock() {
-        CardBlock newBlock = new CardBlock("New Block");
+        CardBlock newBlock = new CardBlock("New Block " + blocksNumber);
+        blocksNumber++;
         buildBlockElement(newBlock);
     }
 
@@ -123,7 +126,9 @@ public class Controller {
         alert.setHeaderText("You're about to clear the ToDo List!");
         alert.setContentText("Are you sure you want to delete all your cards?");
         if (alert.showAndWait().orElse(null) == ButtonType.OK) {
+            HBox hBox = (HBox) cardPanel.getChildren().getLast();
             cardPanel.getChildren().clear();
+            cardPanel.getChildren().add(hBox);
             model.deleteAllCards();
         }
     }
